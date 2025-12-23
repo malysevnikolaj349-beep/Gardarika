@@ -7,144 +7,208 @@
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
-  <header class="hero">
-    <div class="hero-content">
-      <div class="hero-text">
-        <p class="eyebrow">Gardarika Admin</p>
-        <h1>Интерфейс Бога</h1>
-        <p>Управление миром, экономикой и судьбами игроков.</p>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-icon">⚡</span>
+        <div>
+          <p class="brand-title">Gardarika</p>
+          <p class="brand-subtitle">Админ-пульт</p>
+        </div>
       </div>
-      <div class="hero-actions">
-        <button id="refresh-btn" class="ghost">Обновить данные</button>
-        <button id="epoch-btn" class="primary">Новая эпоха</button>
+      <nav class="nav">
+        <a class="nav-link active" href="#dashboard" data-section="dashboard">Дашборд</a>
+        <a class="nav-link" href="#economy" data-section="economy">Экономика</a>
+        <a class="nav-link" href="#world" data-section="world">Мир</a>
+        <a class="nav-link" href="#players" data-section="players">Игроки</a>
+        <a class="nav-link" href="#clans" data-section="clans">Кланы</a>
+        <a class="nav-link" href="#content" data-section="content">Контент</a>
+        <a class="nav-link" href="#logs" data-section="logs">Логи</a>
+      </nav>
+      <div class="sidebar-panel">
+        <p class="panel-title">Быстрые команды</p>
+        <div class="panel-actions">
+          <button id="refresh-btn" class="ghost">Обновить данные</button>
+          <button id="epoch-btn" class="primary">Новая эпоха</button>
+        </div>
       </div>
+    </aside>
+
+    <div class="content">
+      <header class="hero">
+        <div class="hero-content">
+          <div class="hero-text">
+            <p class="eyebrow">Gardarika Admin</p>
+            <h1>Интерфейс Бога</h1>
+            <p>Управление миром, экономикой и судьбами игроков в реальном времени.</p>
+          </div>
+          <div class="hero-actions">
+            <div class="hero-clock" id="hero-clock">--:--</div>
+            <div class="hero-status" id="hero-status"></div>
+          </div>
+        </div>
+      </header>
+
+      <main class="grid">
+        <section class="card" id="dashboard">
+          <div class="card-header">
+            <div class="card-title">
+              <h2>Дашборд</h2>
+              <p>Сводка ключевых показателей сервера.</p>
+            </div>
+            <div class="card-media">
+              <img src="/static/images/dashboard.svg" alt="Дашборд" />
+            </div>
+          </div>
+          <div class="stat-grid" id="dashboard-stats"></div>
+        </section>
+
+        <section class="card" id="economy">
+          <div class="card-header">
+            <div class="card-title">
+              <h2>Экономика и Анти-фрод</h2>
+              <p>Контроль рынков, торгов и подозрительных операций.</p>
+            </div>
+            <div class="card-media">
+              <img src="/static/images/economy.svg" alt="Экономика" />
+            </div>
+          </div>
+          <div class="subsection">
+            <h3>Pending Trades</h3>
+            <div id="trade-list"></div>
+          </div>
+          <div class="subsection">
+            <h3>Торговая Гильдия</h3>
+            <div id="guild-list"></div>
+          </div>
+          <div class="subsection">
+            <h3>Global Market</h3>
+            <form id="economy-settings" class="stacked">
+              <label>Налог аукциона (%) <input type="number" name="auction_tax" min="0" max="20" /></label>
+              <label>Множитель NPC <input type="number" step="0.1" name="npc_buy_multiplier" /></label>
+              <button type="submit">Сохранить</button>
+            </form>
+          </div>
+        </section>
+
+        <section class="card" id="world">
+          <div class="card-header">
+            <div class="card-title">
+              <h2>Управление Миром (Сварог)</h2>
+              <p>Погода, сезон, время и живые ивенты.</p>
+            </div>
+            <div class="card-media">
+              <img src="/static/images/world.svg" alt="Мир" />
+            </div>
+          </div>
+          <div id="world-state"></div>
+          <form id="world-form" class="stacked">
+            <label>Режим времени
+              <select name="time_mode">
+                <option value="auto">Авто</option>
+                <option value="manual">Ручное</option>
+              </select>
+            </label>
+            <label>Время суток
+              <select name="time_of_day">
+                <option value="day">День</option>
+                <option value="night">Ночь</option>
+              </select>
+            </label>
+            <label>Погода
+              <select name="weather">
+                <option value="clear">Ясно</option>
+                <option value="rain">Дождь</option>
+                <option value="fog">Туман</option>
+                <option value="heat">Зной</option>
+              </select>
+            </label>
+            <label>Сезон
+              <select name="season">
+                <option value="summer">Лето</option>
+                <option value="winter">Зима</option>
+              </select>
+            </label>
+            <button type="submit">Обновить мир</button>
+          </form>
+          <div class="subsection">
+            <h3>Ивенты</h3>
+            <div id="event-list"></div>
+          </div>
+        </section>
+
+        <section class="card" id="players">
+          <div class="card-header">
+            <div class="card-title">
+              <h2>Игроки и Персонажи</h2>
+              <p>Поиск, баланс и инвентарь игрока.</p>
+            </div>
+            <div class="card-media">
+              <img src="/static/images/players.svg" alt="Игроки" />
+            </div>
+          </div>
+          <form id="player-search" class="inline">
+            <input type="text" name="query" placeholder="ID или ник" />
+            <button type="submit">Найти</button>
+          </form>
+          <div id="player-profile"></div>
+        </section>
+
+        <section class="card" id="clans">
+          <div class="card-header">
+            <div class="card-title">
+              <h2>Кланы и Войны</h2>
+              <p>Лидеры, казна и контроль территорий.</p>
+            </div>
+            <div class="card-media">
+              <img src="/static/images/clans.svg" alt="Кланы" />
+            </div>
+          </div>
+          <div id="clan-list"></div>
+          <button id="reset-territories" class="danger">Reset Territories</button>
+          <div id="territory-list"></div>
+        </section>
+
+        <section class="card" id="content">
+          <div class="card-header">
+            <div class="card-title">
+              <h2>Контент и Лор</h2>
+              <p>Квесты, легенды и ручной спавн предметов.</p>
+            </div>
+            <div class="card-media">
+              <img src="/static/images/content.svg" alt="Контент и лор" />
+            </div>
+          </div>
+          <div id="quest-list"></div>
+          <form id="spawn-item" class="inline">
+            <input type="number" name="player_id" placeholder="ID игрока" />
+            <input type="text" name="item" placeholder="Название предмета" />
+            <button type="submit">Создать предмет</button>
+          </form>
+        </section>
+
+        <section class="card" id="logs">
+          <div class="card-header">
+            <div class="card-title">
+              <h2>Логи и Безопасность</h2>
+              <p>Журнал действий и следы администраторов.</p>
+            </div>
+            <div class="card-media">
+              <img src="/static/images/logs.svg" alt="Логи" />
+            </div>
+          </div>
+          <div class="subsection">
+            <h3>Action Logs</h3>
+            <div id="action-logs"></div>
+          </div>
+          <div class="subsection">
+            <h3>Admin Logs</h3>
+            <div id="admin-logs"></div>
+          </div>
+        </section>
+      </main>
     </div>
-    <div class="hero-status" id="hero-status"></div>
-  </header>
-
-  <main class="grid">
-    <section class="card" id="dashboard">
-      <div class="card-header">
-        <h2>Дашборд</h2>
-        <p>Сводка ключевых показателей сервера.</p>
-      </div>
-      <div class="stat-grid" id="dashboard-stats"></div>
-    </section>
-
-    <section class="card" id="economy">
-      <div class="card-header">
-        <h2>Экономика и Анти-фрод</h2>
-        <p>Контроль рынков, торгов и подозрительных операций.</p>
-      </div>
-      <div class="subsection">
-        <h3>Pending Trades</h3>
-        <div id="trade-list"></div>
-      </div>
-      <div class="subsection">
-        <h3>Торговая Гильдия</h3>
-        <div id="guild-list"></div>
-      </div>
-      <div class="subsection">
-        <h3>Global Market</h3>
-        <form id="economy-settings">
-          <label>Налог аукциона (%) <input type="number" name="auction_tax" min="0" max="20" /></label>
-          <label>Множитель NPC <input type="number" step="0.1" name="npc_buy_multiplier" /></label>
-          <button type="submit">Сохранить</button>
-        </form>
-      </div>
-    </section>
-
-    <section class="card" id="world">
-      <div class="card-header">
-        <h2>Управление Миром (Сварог)</h2>
-        <p>Погода, сезон, время и живые ивенты.</p>
-      </div>
-      <div id="world-state"></div>
-      <form id="world-form">
-        <label>Режим времени
-          <select name="time_mode">
-            <option value="auto">Авто</option>
-            <option value="manual">Ручное</option>
-          </select>
-        </label>
-        <label>Время суток
-          <select name="time_of_day">
-            <option value="day">День</option>
-            <option value="night">Ночь</option>
-          </select>
-        </label>
-        <label>Погода
-          <select name="weather">
-            <option value="clear">Ясно</option>
-            <option value="rain">Дождь</option>
-            <option value="fog">Туман</option>
-            <option value="heat">Зной</option>
-          </select>
-        </label>
-        <label>Сезон
-          <select name="season">
-            <option value="summer">Лето</option>
-            <option value="winter">Зима</option>
-          </select>
-        </label>
-        <button type="submit">Обновить мир</button>
-      </form>
-      <div class="subsection">
-        <h3>Ивенты</h3>
-        <div id="event-list"></div>
-      </div>
-    </section>
-
-    <section class="card" id="players">
-      <div class="card-header">
-        <h2>Игроки и Персонажи</h2>
-        <p>Поиск, баланс и инвентарь игрока.</p>
-      </div>
-      <form id="player-search">
-        <input type="text" name="query" placeholder="ID или ник" />
-        <button type="submit">Найти</button>
-      </form>
-      <div id="player-profile"></div>
-    </section>
-
-    <section class="card" id="clans">
-      <div class="card-header">
-        <h2>Кланы и Войны</h2>
-        <p>Лидеры, казна и контроль территорий.</p>
-      </div>
-      <div id="clan-list"></div>
-      <button id="reset-territories" class="danger">Reset Territories</button>
-      <div id="territory-list"></div>
-    </section>
-
-    <section class="card" id="content">
-      <div class="card-header">
-        <h2>Контент и Лор</h2>
-        <p>Квесты, легенды и ручной спавн предметов.</p>
-      </div>
-      <div id="quest-list"></div>
-      <form id="spawn-item">
-        <input type="number" name="player_id" placeholder="ID игрока" />
-        <input type="text" name="item" placeholder="Название предмета" />
-        <button type="submit">Создать предмет</button>
-      </form>
-    </section>
-
-    <section class="card" id="logs">
-      <div class="card-header">
-        <h2>Логи и Безопасность</h2>
-        <p>Журнал действий и следы администраторов.</p>
-      </div>
-      <div class="subsection">
-        <h3>Action Logs</h3>
-        <div id="action-logs"></div>
-      </div>
-      <div class="subsection">
-        <h3>Admin Logs</h3>
-        <div id="admin-logs"></div>
-      </div>
-    </section>
-  </main>
+  </div>
 
   <script src="/static/app.js"></script>
 </body>

@@ -222,6 +222,51 @@ const loadAll = async () => {
   renderLogs(admins, "admin-logs");
 };
 
+const updateClock = () => {
+  const clock = document.getElementById("hero-clock");
+  if (!clock) return;
+  const now = new Date();
+  clock.textContent = now.toLocaleTimeString("ru-RU", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
+const setupNavigation = () => {
+  const links = Array.from(document.querySelectorAll(".nav-link"));
+  const sections = links
+    .map((link) => document.getElementById(link.dataset.section))
+    .filter(Boolean);
+
+  links.forEach((link) => {
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      const target = document.getElementById(link.dataset.section);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+  });
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        links.forEach((link) => link.classList.remove("active"));
+        const activeLink = links.find(
+          (link) => link.dataset.section === entry.target.id
+        );
+        if (activeLink) {
+          activeLink.classList.add("active");
+        }
+      });
+    },
+    { rootMargin: "-45% 0px -45% 0px", threshold: 0 }
+  );
+
+  sections.forEach((section) => observer.observe(section));
+};
+
 const setupHandlers = () => {
   document.getElementById("epoch-btn").addEventListener("click", async () => {
     const stats = await api("/api/dashboard/epoch", { method: "POST" });
@@ -358,6 +403,14 @@ const setupHandlers = () => {
   });
 };
 
-loadAll().then(setupHandlers).catch((error) => {
-  document.body.innerHTML = `<p class='error'>Ошибка загрузки: ${error.message}</p>`;
-});
+updateClock();
+setInterval(updateClock, 30000);
+
+loadAll()
+  .then(() => {
+    setupHandlers();
+    setupNavigation();
+  })
+  .catch((error) => {
+    document.body.innerHTML = `<p class='error'>Ошибка загрузки: ${error.message}</p>`;
+  });
