@@ -201,6 +201,50 @@ a {
   padding: 0 32px 32px;
 }
 
+.tab-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 0 32px;
+}
+
+.tab-button {
+  border: 1px solid var(--border);
+  background: rgba(15, 23, 42, 0.6);
+  color: var(--muted);
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab-button:hover {
+  color: var(--text);
+  border-color: var(--accent-soft);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.5);
+}
+
+.tab-button.active {
+  background: var(--accent-soft);
+  color: var(--text);
+  border-color: rgba(124, 93, 255, 0.6);
+}
+
+.tabbed {
+  padding: 0 32px 32px;
+  display: grid;
+  gap: 18px;
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: flex;
+}
+
 .card {
   background: var(--panel);
   padding: 18px;
@@ -399,6 +443,14 @@ label {
   }
 
   .grid {
+    padding: 0 20px 24px;
+  }
+
+  .tab-bar {
+    padding: 0 20px;
+  }
+
+  .tabbed {
     padding: 0 20px 24px;
   }
 }
