@@ -10,6 +10,50 @@ body {
   background: linear-gradient(135deg, #141b2d, #2f2148);
 }
 
+.hero-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.hero-text {
+  max-width: 480px;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  color: #a0aec0;
+  margin: 0 0 8px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.hero-status {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.pill {
+  background: rgba(15, 21, 37, 0.7);
+  border: 1px solid rgba(127, 90, 240, 0.4);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -22,6 +66,19 @@ body {
   padding: 16px;
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+}
+
+.card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.card-header p {
+  margin: 0;
+  color: #9ca3af;
+  font-size: 13px;
 }
 
 .stat-grid {
@@ -37,6 +94,15 @@ body {
   border-radius: 8px;
   display: flex;
   justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+#world-state {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
 }
 
 .subsection {
@@ -53,6 +119,10 @@ body {
   gap: 6px;
 }
 
+.row h4 {
+  margin: 0;
+}
+
 .actions {
   display: flex;
   gap: 8px;
@@ -66,6 +136,26 @@ button {
   padding: 8px 12px;
   border-radius: 8px;
   cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(127, 90, 240, 0.3);
+}
+
+button.primary {
+  background: #7f5af0;
+}
+
+button.ghost {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #e2e8f0;
+}
+
+button.danger {
+  background: #ef4444;
 }
 
 input, select {
@@ -82,6 +172,27 @@ label {
   align-items: center;
   justify-content: space-between;
   margin: 6px 0;
+}
+
+.toggle-group {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 8px 0;
+}
+
+.log-entry {
+  background: #111827;
+  border: 1px solid #1f2937;
+}
+
+.log-title {
+  font-weight: 600;
+}
+
+.log-meta {
+  color: #9ca3af;
+  font-size: 12px;
 }
 
 .error {
