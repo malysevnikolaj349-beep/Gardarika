@@ -31,6 +31,24 @@ const renderStats = (stats) => {
     div.innerHTML = `<strong>${label}</strong><span>${value}</span>`;
     container.appendChild(div);
   });
+  const heroStatus = document.getElementById("hero-status");
+  if (heroStatus) {
+    heroStatus.innerHTML = `
+      <span class="pill">🟢 Онлайн: ${stats.online}</span>
+      <span class="pill">⚙️ Нагрузка: ${stats.server_load}%</span>
+      <span class="pill">🏆 Лидер: ${stats.leader_name}</span>
+    `;
+  }
+};
+
+const updateLastSync = () => {
+  const heroStatus = document.getElementById("hero-status");
+  if (!heroStatus) return;
+  const timestamp = new Date().toLocaleTimeString("ru-RU", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  heroStatus.insertAdjacentHTML("beforeend", `<span class="pill">⏱️ ${timestamp}</span>`);
 };
 
 const renderTrades = (trades) => {
@@ -74,7 +92,11 @@ const renderGuildReports = (reports) => {
 
 const renderWorldState = (state) => {
   const container = document.getElementById("world-state");
-  container.innerHTML = `Текущий сезон: ${state.season} | Время: ${state.time_of_day} | Погода: ${state.weather}`;
+  container.innerHTML = `
+    <div class="pill">Сезон: ${state.season}</div>
+    <div class="pill">Время: ${state.time_of_day}</div>
+    <div class="pill">Погода: ${state.weather}</div>
+  `;
   const form = document.getElementById("world-form");
   form.time_mode.value = state.time_mode;
   form.time_of_day.value = state.time_of_day;
@@ -162,8 +184,19 @@ const renderLogs = (entries, containerId) => {
   container.innerHTML = "";
   entries.forEach((entry) => {
     const row = document.createElement("div");
-    row.className = "row";
-    row.textContent = entry.description || `${entry.action} (${entry.created_at})`;
+    row.className = "row log-entry";
+    if (entry.description) {
+      row.innerHTML = `
+        <div class="log-title">${entry.description}</div>
+        <div class="log-meta">${entry.category || "Action log"}</div>
+      `;
+    } else {
+      const timestamp = new Date(entry.created_at).toLocaleString("ru-RU");
+      row.innerHTML = `
+        <div class="log-title">${entry.action}</div>
+        <div class="log-meta">${entry.admin} • ${timestamp}</div>
+      `;
+    }
     container.appendChild(row);
   });
 };
@@ -197,12 +230,17 @@ const loadAll = async () => {
   renderQuests(quests);
   renderLogs(actions, "action-logs");
   renderLogs(admins, "admin-logs");
+  updateLastSync();
 };
 
 const setupHandlers = () => {
   document.getElementById("epoch-btn").addEventListener("click", async () => {
     const stats = await api("/api/dashboard/epoch", { method: "POST" });
     renderStats(stats);
+  });
+
+  document.getElementById("refresh-btn").addEventListener("click", async () => {
+    await loadAll();
   });
 
   document.getElementById("trade-list").addEventListener("click", async (event) => {

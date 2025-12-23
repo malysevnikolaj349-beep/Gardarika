@@ -8,19 +8,43 @@
 </head>
 <body>
   <header class="hero">
-    <h1>Интерфейс Бога — Gardarika</h1>
-    <p>Управление миром, экономикой и судьбами игроков.</p>
+    <div class="hero-content">
+      <div class="hero-text">
+        <p class="eyebrow">Gardarika Admin</p>
+        <h1>Интерфейс Бога</h1>
+        <p>Управление миром, экономикой и судьбами игроков.</p>
+      </div>
+      <div class="hero-actions">
+        <button id="refresh-btn" class="ghost">Обновить данные</button>
+        <button id="epoch-btn" class="primary">Новая эпоха</button>
+      </div>
+    </div>
+    <nav class="hero-nav">
+      <a href="#dashboard">Дашборд</a>
+      <a href="#economy">Экономика</a>
+      <a href="#world">Мир</a>
+      <a href="#players">Игроки</a>
+      <a href="#clans">Кланы</a>
+      <a href="#content">Контент</a>
+      <a href="#logs">Логи</a>
+    </nav>
+    <div class="hero-status" id="hero-status"></div>
   </header>
 
   <main class="grid">
     <section class="card" id="dashboard">
-      <h2>Дашборд</h2>
+      <div class="card-header">
+        <h2>Дашборд</h2>
+        <p>Сводка ключевых показателей сервера.</p>
+      </div>
       <div class="stat-grid" id="dashboard-stats"></div>
-      <button id="epoch-btn">Force New Epoch</button>
     </section>
 
     <section class="card" id="economy">
-      <h2>Экономика и Анти-фрод</h2>
+      <div class="card-header">
+        <h2>Экономика и Анти-фрод</h2>
+        <p>Контроль рынков, торгов и подозрительных операций.</p>
+      </div>
       <div class="subsection">
         <h3>Pending Trades</h3>
         <div id="trade-list"></div>
@@ -40,7 +64,10 @@
     </section>
 
     <section class="card" id="world">
-      <h2>Управление Миром (Сварог)</h2>
+      <div class="card-header">
+        <h2>Управление Миром (Сварог)</h2>
+        <p>Погода, сезон, время и живые ивенты.</p>
+      </div>
       <div id="world-state"></div>
       <form id="world-form">
         <label>Режим времени
@@ -78,7 +105,10 @@
     </section>
 
     <section class="card" id="players">
-      <h2>Игроки и Персонажи</h2>
+      <div class="card-header">
+        <h2>Игроки и Персонажи</h2>
+        <p>Поиск, баланс и инвентарь игрока.</p>
+      </div>
       <form id="player-search">
         <input type="text" name="query" placeholder="ID или ник" />
         <button type="submit">Найти</button>
@@ -87,14 +117,20 @@
     </section>
 
     <section class="card" id="clans">
-      <h2>Кланы и Войны</h2>
+      <div class="card-header">
+        <h2>Кланы и Войны</h2>
+        <p>Лидеры, казна и контроль территорий.</p>
+      </div>
       <div id="clan-list"></div>
-      <button id="reset-territories">Reset Territories</button>
+      <button id="reset-territories" class="danger">Reset Territories</button>
       <div id="territory-list"></div>
     </section>
 
     <section class="card" id="content">
-      <h2>Контент и Лор</h2>
+      <div class="card-header">
+        <h2>Контент и Лор</h2>
+        <p>Квесты, легенды и ручной спавн предметов.</p>
+      </div>
       <div id="quest-list"></div>
       <form id="spawn-item">
         <input type="number" name="player_id" placeholder="ID игрока" />
@@ -104,7 +140,10 @@
     </section>
 
     <section class="card" id="logs">
-      <h2>Логи и Безопасность</h2>
+      <div class="card-header">
+        <h2>Логи и Безопасность</h2>
+        <p>Журнал действий и следы администраторов.</p>
+      </div>
       <div class="subsection">
         <h3>Action Logs</h3>
         <div id="action-logs"></div>
