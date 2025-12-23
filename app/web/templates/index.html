@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gardarika Admin</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Gardarika • Admin Console</p>
+        <h1>Интерфейс Бога</h1>
+        <p class="subtitle">Контроль экономики, мира и игроков в реальном времени.</p>
+      </div>
+      <div class="topbar-actions">
+        <span class="status-pill">Live</span>
+      </div>
+    </header>
+
+    <div id="error-banner" class="error-banner" hidden></div>
+
+    <main class="grid">
+      <section class="card" id="dashboard">
+        <div class="card-header">
+          <div>
+            <h2>Дашборд</h2>
+            <p>Сводка состояния сервера.</p>
+          </div>
+          <button class="button button-primary" id="epoch-btn">Force New Epoch</button>
+        </div>
+        <div class="stat-grid" id="dashboard-stats"></div>
+      </section>
+
+      <section class="card" id="economy">
+        <div class="card-header">
+          <div>
+            <h2>Экономика и Анти-фрод</h2>
+            <p>Подозрительные сделки и контроль рынка.</p>
+          </div>
+        </div>
+        <div class="subsection">
+          <h3>Pending Trades</h3>
+          <div id="trade-list"></div>
+        </div>
+        <div class="subsection">
+          <h3>Торговая Гильдия</h3>
+          <div id="guild-list"></div>
+        </div>
+        <div class="subsection">
+          <h3>Global Market</h3>
+          <form id="economy-settings" class="form-grid">
+            <label>Налог аукциона (%) <input type="number" name="auction_tax" min="0" max="20" /></label>
+            <label>Множитель NPC <input type="number" step="0.1" name="npc_buy_multiplier" /></label>
+            <button class="button button-primary" type="submit">Сохранить</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="card" id="world">
+        <div class="card-header">
+          <div>
+            <h2>Управление Миром (Сварог)</h2>
+            <p>Погода, сезон и ивенты.</p>
+          </div>
+        </div>
+        <div id="world-state" class="inline-summary"></div>
+        <form id="world-form" class="form-grid">
+          <label>Режим времени
+            <select name="time_mode">
+              <option value="auto">Авто</option>
+              <option value="manual">Ручное</option>
+            </select>
+          </label>
+          <label>Время суток
+            <select name="time_of_day">
+              <option value="day">День</option>
+              <option value="night">Ночь</option>
+            </select>
+          </label>
+          <label>Погода
+            <select name="weather">
+              <option value="clear">Ясно</option>
+              <option value="rain">Дождь</option>
+              <option value="fog">Туман</option>
+              <option value="heat">Зной</option>
+            </select>
+          </label>
+          <label>Сезон
+            <select name="season">
+              <option value="summer">Лето</option>
+              <option value="winter">Зима</option>
+            </select>
+          </label>
+          <button class="button button-primary" type="submit">Обновить мир</button>
+        </form>
+        <div class="subsection">
+          <h3>Ивенты</h3>
+          <div id="event-list"></div>
+        </div>
+      </section>
+
+      <section class="card" id="players">
+        <div class="card-header">
+          <div>
+            <h2>Игроки и Персонажи</h2>
+            <p>Поиск, правки и модерация.</p>
+          </div>
+        </div>
+        <form id="player-search" class="inline-form">
+          <input type="text" name="query" placeholder="ID или ник" />
+          <button class="button button-primary" type="submit">Найти</button>
+        </form>
+        <div id="player-profile"></div>
+      </section>
+
+      <section class="card" id="clans">
+        <div class="card-header">
+          <div>
+            <h2>Кланы и Войны</h2>
+            <p>Казна, лидеры и территории.</p>
+          </div>
+          <button class="button button-secondary" id="reset-territories">Reset Territories</button>
+        </div>
+        <div id="clan-list"></div>
+        <div id="territory-list"></div>
+      </section>
+
+      <section class="card" id="content">
+        <div class="card-header">
+          <div>
+            <h2>Контент и Лор</h2>
+            <p>Квесты и генератор предметов.</p>
+          </div>
+        </div>
+        <div id="quest-list"></div>
+        <form id="spawn-item" class="inline-form">
+          <input type="number" name="player_id" placeholder="ID игрока" />
+          <input type="text" name="item" placeholder="Название предмета" />
+          <button class="button button-primary" type="submit">Создать предмет</button>
+        </form>
+      </section>
+
+      <section class="card" id="logs">
+        <div class="card-header">
+          <div>
+            <h2>Логи и Безопасность</h2>
+            <p>История действий и событий.</p>
+          </div>
+        </div>
+        <div class="subsection">
+          <h3>Action Logs</h3>
+          <div id="action-logs"></div>
+        </div>
+        <div class="subsection">
+          <h3>Admin Logs</h3>
+          <div id="admin-logs"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

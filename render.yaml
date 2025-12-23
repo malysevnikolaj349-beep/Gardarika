@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: gardarika-admin
+    env: python
+    plan: free
+    buildCommand: pip install .
+    startCommand: python -m app.main
+    envVars:
+      - key: WEBAPP_HOST
+        value: 0.0.0.0
+      - key: WEBAPP_PORT
+        fromPort: true
