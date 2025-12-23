@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gardarika Admin</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header class="hero">
+    <h1>Интерфейс Бога — Gardarika</h1>
+    <p>Управление миром, экономикой и судьбами игроков.</p>
+  </header>
+
+  <main class="grid">
+    <section class="card" id="dashboard">
+      <h2>Дашборд</h2>
+      <div class="stat-grid" id="dashboard-stats"></div>
+      <button id="epoch-btn">Force New Epoch</button>
+    </section>
+
+    <section class="card" id="economy">
+      <h2>Экономика и Анти-фрод</h2>
+      <div class="subsection">
+        <h3>Pending Trades</h3>
+        <div id="trade-list"></div>
+      </div>
+      <div class="subsection">
+        <h3>Торговая Гильдия</h3>
+        <div id="guild-list"></div>
+      </div>
+      <div class="subsection">
+        <h3>Global Market</h3>
+        <form id="economy-settings">
+          <label>Налог аукциона (%) <input type="number" name="auction_tax" min="0" max="20" /></label>
+          <label>Множитель NPC <input type="number" step="0.1" name="npc_buy_multiplier" /></label>
+          <button type="submit">Сохранить</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="card" id="world">
+      <h2>Управление Миром (Сварог)</h2>
+      <div id="world-state"></div>
+      <form id="world-form">
+        <label>Режим времени
+          <select name="time_mode">
+            <option value="auto">Авто</option>
+            <option value="manual">Ручное</option>
+          </select>
+        </label>
+        <label>Время суток
+          <select name="time_of_day">
+            <option value="day">День</option>
+            <option value="night">Ночь</option>
+          </select>
+        </label>
+        <label>Погода
+          <select name="weather">
+            <option value="clear">Ясно</option>
+            <option value="rain">Дождь</option>
+            <option value="fog">Туман</option>
+            <option value="heat">Зной</option>
+          </select>
+        </label>
+        <label>Сезон
+          <select name="season">
+            <option value="summer">Лето</option>
+            <option value="winter">Зима</option>
+          </select>
+        </label>
+        <button type="submit">Обновить мир</button>
+      </form>
+      <div class="subsection">
+        <h3>Ивенты</h3>
+        <div id="event-list"></div>
+      </div>
+    </section>
+
+    <section class="card" id="players">
+      <h2>Игроки и Персонажи</h2>
+      <form id="player-search">
+        <input type="text" name="query" placeholder="ID или ник" />
+        <button type="submit">Найти</button>
+      </form>
+      <div id="player-profile"></div>
+    </section>
+
+    <section class="card" id="clans">
+      <h2>Кланы и Войны</h2>
+      <div id="clan-list"></div>
+      <button id="reset-territories">Reset Territories</button>
+      <div id="territory-list"></div>
+    </section>
+
+    <section class="card" id="content">
+      <h2>Контент и Лор</h2>
+      <div id="quest-list"></div>
+      <form id="spawn-item">
+        <input type="number" name="player_id" placeholder="ID игрока" />
+        <input type="text" name="item" placeholder="Название предмета" />
+        <button type="submit">Создать предмет</button>
+      </form>
+    </section>
+
+    <section class="card" id="logs">
+      <h2>Логи и Безопасность</h2>
+      <div class="subsection">
+        <h3>Action Logs</h3>
+        <div id="action-logs"></div>
+      </div>
+      <div class="subsection">
+        <h3>Admin Logs</h3>
+        <div id="admin-logs"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
