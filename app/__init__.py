@@ -1,1 +1,0 @@
-"""Gardarika admin bot package."""
