@@ -232,39 +232,44 @@ const updateClock = () => {
   });
 };
 
-const setupNavigation = () => {
+const setupTabs = () => {
   const links = Array.from(document.querySelectorAll(".nav-link"));
-  const sections = links
-    .map((link) => document.getElementById(link.dataset.section))
-    .filter(Boolean);
+  const tabButtons = Array.from(document.querySelectorAll(".tab-button"));
+  const panels = Array.from(document.querySelectorAll(".tab-panel"));
+
+  const setActive = (sectionId) => {
+    panels.forEach((panel) => {
+      panel.classList.toggle("active", panel.id === sectionId);
+    });
+    links.forEach((link) => {
+      link.classList.toggle("active", link.dataset.section === sectionId);
+    });
+    tabButtons.forEach((button) => {
+      const isActive = button.dataset.section === sectionId;
+      button.classList.toggle("active", isActive);
+      button.setAttribute("aria-selected", String(isActive));
+      button.setAttribute("tabindex", isActive ? "0" : "-1");
+    });
+    if (sectionId) {
+      history.replaceState(null, "", `#${sectionId}`);
+    }
+  };
+
+  const handleClick = (sectionId) => (event) => {
+    event.preventDefault();
+    setActive(sectionId);
+  };
 
   links.forEach((link) => {
-    link.addEventListener("click", (event) => {
-      event.preventDefault();
-      const target = document.getElementById(link.dataset.section);
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    });
+    link.addEventListener("click", handleClick(link.dataset.section));
   });
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        links.forEach((link) => link.classList.remove("active"));
-        const activeLink = links.find(
-          (link) => link.dataset.section === entry.target.id
-        );
-        if (activeLink) {
-          activeLink.classList.add("active");
-        }
-      });
-    },
-    { rootMargin: "-45% 0px -45% 0px", threshold: 0 }
-  );
+  tabButtons.forEach((button) => {
+    button.addEventListener("click", handleClick(button.dataset.section));
+  });
 
-  sections.forEach((section) => observer.observe(section));
+  const initial = window.location.hash.replace("#", "") || "dashboard";
+  setActive(initial);
 };
 
 const setupHandlers = () => {
@@ -409,7 +414,7 @@ setInterval(updateClock, 30000);
 loadAll()
   .then(() => {
     setupHandlers();
-    setupNavigation();
+    setupTabs();
   })
   .catch((error) => {
     document.body.innerHTML = `<p class='error'>Ошибка загрузки: ${error.message}</p>`;

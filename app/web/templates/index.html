@@ -49,8 +49,18 @@
         </div>
       </header>
 
-      <main class="grid">
-        <section class="card" id="dashboard">
+      <div class="tab-bar" role="tablist" aria-label="Разделы панели">
+        <button class="tab-button active" data-section="dashboard" role="tab" aria-controls="dashboard">Дашборд</button>
+        <button class="tab-button" data-section="economy" role="tab" aria-controls="economy">Экономика</button>
+        <button class="tab-button" data-section="world" role="tab" aria-controls="world">Мир</button>
+        <button class="tab-button" data-section="players" role="tab" aria-controls="players">Игроки</button>
+        <button class="tab-button" data-section="clans" role="tab" aria-controls="clans">Кланы</button>
+        <button class="tab-button" data-section="content" role="tab" aria-controls="content">Контент</button>
+        <button class="tab-button" data-section="logs" role="tab" aria-controls="logs">Логи</button>
+      </div>
+
+      <main class="tabbed">
+        <section class="card tab-panel active" id="dashboard" role="tabpanel">
           <div class="card-header">
             <div class="card-title">
               <h2>Дашборд</h2>
@@ -63,7 +73,7 @@
           <div class="stat-grid" id="dashboard-stats"></div>
         </section>
 
-        <section class="card" id="economy">
+        <section class="card tab-panel" id="economy" role="tabpanel">
           <div class="card-header">
             <div class="card-title">
               <h2>Экономика и Анти-фрод</h2>
@@ -91,7 +101,7 @@
           </div>
         </section>
 
-        <section class="card" id="world">
+        <section class="card tab-panel" id="world" role="tabpanel">
           <div class="card-header">
             <div class="card-title">
               <h2>Управление Миром (Сварог)</h2>
@@ -137,7 +147,7 @@
           </div>
         </section>
 
-        <section class="card" id="players">
+        <section class="card tab-panel" id="players" role="tabpanel">
           <div class="card-header">
             <div class="card-title">
               <h2>Игроки и Персонажи</h2>
@@ -154,7 +164,7 @@
           <div id="player-profile"></div>
         </section>
 
-        <section class="card" id="clans">
+        <section class="card tab-panel" id="clans" role="tabpanel">
           <div class="card-header">
             <div class="card-title">
               <h2>Кланы и Войны</h2>
@@ -169,7 +179,7 @@
           <div id="territory-list"></div>
         </section>
 
-        <section class="card" id="content">
+        <section class="card tab-panel" id="content" role="tabpanel">
           <div class="card-header">
             <div class="card-title">
               <h2>Контент и Лор</h2>
@@ -187,10 +197,10 @@
           </form>
         </section>
 
-        <section class="card" id="logs">
-          <div class="card-header">
-            <div class="card-title">
-              <h2>Логи и Безопасность</h2>
+        <section class="card tab-panel" id="logs" role="tabpanel">
+        <div class="card-header">
+          <div class="card-title">
+            <h2>Логи и Безопасность</h2>
               <p>Журнал действий и следы администраторов.</p>
             </div>
             <div class="card-media">
