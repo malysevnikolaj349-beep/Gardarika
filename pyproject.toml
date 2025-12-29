@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gardarika"
+version = "0.1.0"
+description = "Core domain models for the Gardarika Telegram MMORPG."
+authors = [{name = "Gardarika Team"}]
+readme = "README.md"
+requires-python = ">=3.11"
+
+[project.scripts]
+gardarika-demo = "gardarika.app:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
