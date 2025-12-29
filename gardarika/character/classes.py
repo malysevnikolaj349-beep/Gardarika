@@ -1,28 +1,28 @@
 # gardarika/character/classes.py
 
-from .attributes import Attribute
+from .attributes import PrimaryAttribute
 
 BASE_STATS = {
     "Воин": {
-        Attribute.STRENGTH: 12,
-        Attribute.DEXTERITY: 8,
-        Attribute.WISDOM: 5,
-        Attribute.ENDURANCE: 10,
-        Attribute.CHARISMA: 7,
+        PrimaryAttribute.STRENGTH: 12,
+        PrimaryAttribute.DEXTERITY: 8,
+        PrimaryAttribute.WISDOM: 5,
+        PrimaryAttribute.ENDURANCE: 10,
+        PrimaryAttribute.CHARISMA: 7,
     },
     "Волхв": {
-        Attribute.STRENGTH: 5,
-        Attribute.DEXTERITY: 7,
-        Attribute.WISDOM: 12,
-        Attribute.ENDURANCE: 6,
-        Attribute.CHARISMA: 10,
+        PrimaryAttribute.STRENGTH: 5,
+        PrimaryAttribute.DEXTERITY: 7,
+        PrimaryAttribute.WISDOM: 12,
+        PrimaryAttribute.ENDURANCE: 6,
+        PrimaryAttribute.CHARISMA: 10,
     },
     "Охотник": {
-        Attribute.STRENGTH: 8,
-        Attribute.DEXTERITY: 12,
-        Attribute.WISDOM: 7,
-        Attribute.ENDURANCE: 8,
-        Attribute.CHARISMA: 6,
+        PrimaryAttribute.STRENGTH: 8,
+        PrimaryAttribute.DEXTERITY: 12,
+        PrimaryAttribute.WISDOM: 7,
+        PrimaryAttribute.ENDURANCE: 8,
+        PrimaryAttribute.CHARISMA: 6,
     }
 }
 

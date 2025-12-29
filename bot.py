@@ -20,7 +20,7 @@ from gardarika.database.operations import (
     create_character,
 )
 from gardarika.character.character import Character
-from gardarika.character.attributes import Attribute
+from gardarika.character.attributes import PrimaryAttribute
 
 # Включаем логирование
 logging.basicConfig(
@@ -45,25 +45,15 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     )
 
 async def profile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Показывает профиль персонажа."""
+    """Показывает профиль персонажа с расширенными характеристиками."""
     user_id = update.effective_user.id
-    character = get_character_by_user_id(user_id)
+    character_data = get_character_by_user_id(user_id)
 
-    if character:
-        message = (
-            f"<b>Имя:</b> {character['name']}\n"
-            f"<b>Класс:</b> {character['class_name']}\n"
-            f"<b>Фракция:</b> {character['faction_name']}\n"
-            f"<b>Уровень:</b> {character['level']} (Опыт: {character['experience']})\n"
-            f"<b>Здоровье:</b> {character['health']} | <b>Мана:</b> {character['mana']}\n\n"
-            f"<b>Атрибуты:</b>\n"
-            f"  Сила: {character['strength']}\n"
-            f"  Ловкость: {character['dexterity']}\n"
-            f"  Мудрость: {character['wisdom']}\n"
-            f"  Выносливость: {character['endurance']}\n"
-            f"  Харизма: {character['charisma']}"
-        )
-        await update.message.reply_html(message)
+    if character_data:
+        # Создаем полноценный объект персонажа из данных БД
+        # Все вторичные характеристики будут рассчитаны автоматически
+        player = Character.from_db_data(character_data)
+        await update.message.reply_html(str(player))
     else:
         await update.message.reply_text(
             "У вас еще нет персонажа. "
@@ -125,21 +115,21 @@ async def choose_faction(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         # Создаем экземпляр персонажа для получения начальных статов
         player = Character(char_data['name'], char_data['class'], char_data['faction'])
 
-        # Готовим статы для записи в БД
+        # Готовим данные для записи в БД
         stats_for_db = {
             'health': player.health,
             'mana': player.mana,
-            'strength': player.attributes.get(Attribute.STRENGTH, 0),
-            'dexterity': player.attributes.get(Attribute.DEXTERITY, 0),
-            'wisdom': player.attributes.get(Attribute.WISDOM, 0),
-            'endurance': player.attributes.get(Attribute.ENDURANCE, 0),
-            'charisma': player.attributes.get(Attribute.CHARISMA, 0),
+            'strength': player.primary_attributes.get(PrimaryAttribute.STRENGTH, 0),
+            'dexterity': player.primary_attributes.get(PrimaryAttribute.DEXTERITY, 0),
+            'wisdom': player.primary_attributes.get(PrimaryAttribute.WISDOM, 0),
+            'endurance': player.primary_attributes.get(PrimaryAttribute.ENDURANCE, 0),
+            'charisma': player.primary_attributes.get(PrimaryAttribute.CHARISMA, 0),
         }
 
         # Сохраняем в БД
         create_character(user_id, player.name, player.character_class.name, player.faction['name'], stats_for_db)
 
-        await query.edit_message_text(text=f"Персонаж создан!\n\n{player}")
+        await query.edit_message_text(text=f"Персонаж создан!\n\n{player}", parse_mode='HTML')
     except (ValueError, KeyError) as e:
         await query.edit_message_text(text=f"Произошла ошибка при создании персонажа: {e}")
 
