@@ -1,4 +1,5 @@
 # bot.py
+import html
 import logging
 import os
 
@@ -51,7 +52,7 @@ async def profile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
     if character:
         message = (
-            f"<b>Имя:</b> {character['name']}\n"
+            f"<b>Имя:</b> {html.escape(character['name'])}\n"
             f"<b>Класс:</b> {character['class_name']}\n"
             f"<b>Фракция:</b> {character['faction_name']}\n"
             f"<b>Уровень:</b> {character['level']} (Опыт: {character['experience']})\n"
@@ -84,7 +85,12 @@ async def create_character_start(update: Update, context: ContextTypes.DEFAULT_T
 
 async def choose_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Получает имя персонажа и запрашивает класс."""
-    context.user_data['name'] = update.message.text
+    name = update.message.text.strip()
+    if len(name) > 30:
+        await update.message.reply_text("Имя слишком длинное (максимум 30 символов). Попробуйте еще раз.")
+        return CHOOSING_NAME
+
+    context.user_data['name'] = name
 
     keyboard = [
         [InlineKeyboardButton("⚔️ Воин", callback_data="воин")],

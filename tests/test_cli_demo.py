@@ -1,13 +1,18 @@
 import os
 import subprocess
 import sys
+from pathlib import Path
 
 
 def test_demo_cli_runs():
-    env = dict(os.environ, PYTHONPATH="src")
+    # Run from src directory to avoid package conflict with root 'gardarika' folder
+    src_dir = Path(__file__).resolve().parent.parent / "src"
+    env = dict(os.environ, PYTHONPATH=str(src_dir))
+
     result = subprocess.run(
         [sys.executable, "-m", "gardarika.app", "demo"],
         env=env,
+        cwd=str(src_dir),
         capture_output=True,
         text=True,
         check=True,
@@ -18,10 +23,13 @@ def test_demo_cli_runs():
 
 
 def test_render_cli_outputs_map():
-    env = dict(os.environ, PYTHONPATH="src")
+    src_dir = Path(__file__).resolve().parent.parent / "src"
+    env = dict(os.environ, PYTHONPATH=str(src_dir))
+
     result = subprocess.run(
         [sys.executable, "-m", "gardarika.app", "render"],
         env=env,
+        cwd=str(src_dir),
         capture_output=True,
         text=True,
         check=True,
