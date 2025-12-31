@@ -21,6 +21,8 @@ from gardarika.database.operations import (
 )
 from gardarika.character.character import Character
 from gardarika.character.attributes import Attribute
+from gardarika.character.classes import AVAILABLE_CLASSES
+from gardarika.lore.world import FACTIONS
 
 # Включаем логирование
 logging.basicConfig(
@@ -51,17 +53,18 @@ async def profile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
     if character:
         message = (
-            f"<b>Имя:</b> {character['name']}\n"
-            f"<b>Класс:</b> {character['class_name']}\n"
-            f"<b>Фракция:</b> {character['faction_name']}\n"
-            f"<b>Уровень:</b> {character['level']} (Опыт: {character['experience']})\n"
-            f"<b>Здоровье:</b> {character['health']} | <b>Мана:</b> {character['mana']}\n\n"
-            f"<b>Атрибуты:</b>\n"
-            f"  Сила: {character['strength']}\n"
-            f"  Ловкость: {character['dexterity']}\n"
-            f"  Мудрость: {character['wisdom']}\n"
-            f"  Выносливость: {character['endurance']}\n"
-            f"  Харизма: {character['charisma']}"
+            f"📜 <b>ПРОФИЛЬ ГЕРОЯ</b>\n\n"
+            f"👤 <b>Имя:</b> {character['name']}\n"
+            f"🛡 <b>Класс:</b> {character['class_name']}\n"
+            f"🚩 <b>Фракция:</b> {character['faction_name']}\n"
+            f"📊 <b>Уровень:</b> {character['level']} (Опыт: {character['experience']})\n"
+            f"❤️ <b>Здоровье:</b> {character['health']} | 💧 <b>Мана:</b> {character['mana']}\n\n"
+            f"<b>💎 Атрибуты:</b>\n"
+            f"  💪 Сила: {character['strength']}\n"
+            f"  🦶 Ловкость: {character['dexterity']}\n"
+            f"  🦉 Мудрость: {character['wisdom']}\n"
+            f"  🏇 Выносливость: {character['endurance']}\n"
+            f"  🎭 Харизма: {character['charisma']}"
         )
         await update.message.reply_html(message)
     else:
@@ -93,7 +96,11 @@ async def choose_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    await update.message.reply_text("Отличное имя! Теперь выбери класс:", reply_markup=reply_markup)
+    msg_text = "Отличное имя! Теперь выбери свой путь:\n\n"
+    for cls in AVAILABLE_CLASSES.values():
+        msg_text += f"<b>{cls.name}</b>: {cls.description}\n"
+
+    await update.message.reply_html(msg_text, reply_markup=reply_markup)
     return CHOOSING_CLASS
 
 async def choose_class(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
@@ -109,7 +116,11 @@ async def choose_class(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    await query.edit_message_text(text="Класс выбран. К какой фракции примкнешь?", reply_markup=reply_markup)
+    msg_text = "Класс выбран. К какой фракции примкнешь?\n\n"
+    for faction in FACTIONS.values():
+        msg_text += f"<b>{faction['name']}</b>\n{faction['description']}\n\n"
+
+    await query.edit_message_text(text=msg_text, reply_markup=reply_markup, parse_mode='HTML')
     return CHOOSING_FACTION
 
 async def choose_faction(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
