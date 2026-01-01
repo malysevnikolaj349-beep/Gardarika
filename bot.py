@@ -1,4 +1,5 @@
 # bot.py
+import html
 import logging
 import os
 
@@ -51,9 +52,9 @@ async def profile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
     if character:
         message = (
-            f"<b>Имя:</b> {character['name']}\n"
-            f"<b>Класс:</b> {character['class_name']}\n"
-            f"<b>Фракция:</b> {character['faction_name']}\n"
+            f"<b>Имя:</b> {html.escape(character['name'])}\n"
+            f"<b>Класс:</b> {html.escape(character['class_name'])}\n"
+            f"<b>Фракция:</b> {html.escape(character['faction_name'])}\n"
             f"<b>Уровень:</b> {character['level']} (Опыт: {character['experience']})\n"
             f"<b>Здоровье:</b> {character['health']} | <b>Мана:</b> {character['mana']}\n\n"
             f"<b>Атрибуты:</b>\n"
