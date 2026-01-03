@@ -51,23 +51,25 @@ async def profile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
     if character:
         message = (
-            f"<b>Имя:</b> {character['name']}\n"
-            f"<b>Класс:</b> {character['class_name']}\n"
-            f"<b>Фракция:</b> {character['faction_name']}\n"
-            f"<b>Уровень:</b> {character['level']} (Опыт: {character['experience']})\n"
-            f"<b>Здоровье:</b> {character['health']} | <b>Мана:</b> {character['mana']}\n\n"
-            f"<b>Атрибуты:</b>\n"
-            f"  Сила: {character['strength']}\n"
-            f"  Ловкость: {character['dexterity']}\n"
-            f"  Мудрость: {character['wisdom']}\n"
-            f"  Выносливость: {character['endurance']}\n"
-            f"  Харизма: {character['charisma']}"
+            f"📜 <b>ПРОФИЛЬ ГЕРОЯ</b>\n\n"
+            f"👤 <b>Имя:</b> {character['name']}\n"
+            f"🛡 <b>Класс:</b> {character['class_name']}\n"
+            f"🚩 <b>Фракция:</b> {character['faction_name']}\n"
+            f"📊 <b>Уровень:</b> {character['level']} (Опыт: {character['experience']})\n"
+            f"❤️ <b>Здоровье:</b> {character['health']}\n"
+            f"💧 <b>Мана:</b> {character['mana']}\n\n"
+            f"<b>💎 Атрибуты:</b>\n"
+            f"  💪 Сила: {character['strength']}\n"
+            f"  🦶 Ловкость: {character['dexterity']}\n"
+            f"  🦉 Мудрость: {character['wisdom']}\n"
+            f"  🏇 Выносливость: {character['endurance']}\n"
+            f"  🎭 Харизма: {character['charisma']}"
         )
         await update.message.reply_html(message)
     else:
         await update.message.reply_text(
-            "У вас еще нет персонажа. "
-            "Используйте команду /create_character, чтобы создать его."
+            "🚫 У вас еще нет персонажа.\n"
+            "👉 Используйте команду /create_character, чтобы начать свой путь."
         )
 
 # --- Логика создания персонажа ---
