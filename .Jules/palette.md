@@ -1,3 +1,3 @@
-## 2024-05-23 - Visual Polish in Text Interfaces
-**Learning:** In text-based interfaces like Telegram bots, emojis serve as critical visual anchors. Replacing plain text lists with emoji-bulleted lists (e.g., 🛡 Class, 📊 Level) significantly improves scannability and "delight" without changing the underlying layout or requiring complex UI components.
-**Action:** When working on chat bots, always look for opportunities to replace standard bullet points or labels with context-appropriate emojis to improve cognitive processing speed for the user.
+## 2024-05-22 - Visual Consistency in Text Interfaces
+**Learning:** Even in text-based interfaces like Telegram bots, visual consistency (e.g., matching emoji usage and layout between "creation" success messages and "profile" viewing) significantly reduces cognitive load and increases the feeling of polish. Users perceive the system as more robust when the same data is presented identically across different contexts.
+**Action:** Always cross-reference how a data entity (like a Character) is displayed in different parts of the application (creation, inspection, modification) and unify them into a single presentation format or ensure strict style parity.
