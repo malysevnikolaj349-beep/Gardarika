@@ -31,6 +31,28 @@ logger = logging.getLogger(__name__)
 # Определяем состояния для диалога
 CHOOSING_NAME, CHOOSING_CLASS, CHOOSING_FACTION = range(3)
 
+
+# --- Вспомогательные функции ---
+
+def format_profile_message(character):
+    """Форматирует сообщение профиля с эмодзи и HTML."""
+    return (
+        f"📜 <b>ПРОФИЛЬ ГЕРОЯ</b>\n\n"
+        f"👤 <b>Имя:</b> {character['name']}\n"
+        f"🛡 <b>Класс:</b> {character['class_name']}\n"
+        f"🚩 <b>Фракция:</b> {character['faction_name']}\n"
+        f"📊 <b>Уровень:</b> {character['level']} (Опыт: {character['experience']})\n"
+        f"❤️ <b>Здоровье:</b> {character['health']}\n"
+        f"💧 <b>Мана:</b> {character['mana']}\n\n"
+        f"<b>💎 Атрибуты:</b>\n"
+        f"  💪 Сила: {character['strength']}\n"
+        f"  🦶 Ловкость: {character['dexterity']}\n"
+        f"  🦉 Мудрость: {character['wisdom']}\n"
+        f"  🏇 Выносливость: {character['endurance']}\n"
+        f"  🎭 Харизма: {character['charisma']}"
+    )
+
+
 # --- Функции-обработчики команд ---
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -50,19 +72,7 @@ async def profile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     character = get_character_by_user_id(user_id)
 
     if character:
-        message = (
-            f"<b>Имя:</b> {character['name']}\n"
-            f"<b>Класс:</b> {character['class_name']}\n"
-            f"<b>Фракция:</b> {character['faction_name']}\n"
-            f"<b>Уровень:</b> {character['level']} (Опыт: {character['experience']})\n"
-            f"<b>Здоровье:</b> {character['health']} | <b>Мана:</b> {character['mana']}\n\n"
-            f"<b>Атрибуты:</b>\n"
-            f"  Сила: {character['strength']}\n"
-            f"  Ловкость: {character['dexterity']}\n"
-            f"  Мудрость: {character['wisdom']}\n"
-            f"  Выносливость: {character['endurance']}\n"
-            f"  Харизма: {character['charisma']}"
-        )
+        message = format_profile_message(character)
         await update.message.reply_html(message)
     else:
         await update.message.reply_text(
