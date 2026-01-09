@@ -1,0 +1,4 @@
+## 2024-05-23 - HTML Injection/XSS in Telegram Messages
+**Vulnerability:** User input (specifically character names) was being directly interpolated into HTML strings used for Telegram messages (in `Character.__str__` and `bot.py`'s `profile` handler). This allowed users to inject HTML tags (e.g., `<b>`, `<a href>`) which could break message formatting or be used for spoofing, although Telegram's HTML subset is limited (no `<script>`).
+**Learning:** Even in non-browser environments like Telegram bots, "XSS" or HTML injection is a risk if the platform parses HTML. Text formatting modes (like `parse_mode='HTML'`) trust the input structure.
+**Prevention:** Always use `html.escape()` when inserting user-controlled data into strings that will be parsed as HTML. This applies to `reply_html` calls and any string representation methods (like `__str__`) intended for rich text display.
