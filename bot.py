@@ -1,6 +1,7 @@
 # bot.py
 import logging
 import os
+import html
 
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
@@ -21,6 +22,7 @@ from gardarika.database.operations import (
 )
 from gardarika.character.character import Character
 from gardarika.character.attributes import Attribute
+from gardarika.character.classes import AVAILABLE_CLASSES
 
 # Включаем логирование
 logging.basicConfig(
@@ -84,7 +86,8 @@ async def create_character_start(update: Update, context: ContextTypes.DEFAULT_T
 
 async def choose_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Получает имя персонажа и запрашивает класс."""
-    context.user_data['name'] = update.message.text
+    name = update.message.text
+    context.user_data['name'] = name
 
     keyboard = [
         [InlineKeyboardButton("⚔️ Воин", callback_data="воин")],
@@ -93,14 +96,28 @@ async def choose_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    await update.message.reply_text("Отличное имя! Теперь выбери класс:", reply_markup=reply_markup)
+    # Build description text
+    classes_text = "\n\n".join(
+        f"<b>{cls.name}</b>: {cls.description}"
+        for cls in AVAILABLE_CLASSES.values()
+    )
+
+    message_text = (
+        f"Отличное имя, <b>{html.escape(name)}</b>! Теперь выбери свой путь:\n\n"
+        f"{classes_text}"
+    )
+
+    await update.message.reply_html(message_text, reply_markup=reply_markup)
     return CHOOSING_CLASS
 
 async def choose_class(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Получает класс и запрашивает фракцию."""
     query = update.callback_query
     await query.answer()
-    context.user_data['class'] = query.data
+    class_key = query.data
+    context.user_data['class'] = class_key
+
+    chosen_class = AVAILABLE_CLASSES.get(class_key)
 
     keyboard = [
         [InlineKeyboardButton("🏰 Киевское Княжество", callback_data="kiev")],
@@ -109,7 +126,15 @@ async def choose_class(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    await query.edit_message_text(text="Класс выбран. К какой фракции примкнешь?", reply_markup=reply_markup)
+    message_text = "Класс выбран. К какой фракции примкнешь?"
+    if chosen_class:
+        message_text = (
+            f"Выбран путь: <b>{chosen_class.name}</b>.\n"
+            f"{chosen_class.description}\n\n"
+            "Теперь выбери, к какой фракции примкнешь:"
+        )
+
+    await query.edit_message_text(text=message_text, reply_markup=reply_markup, parse_mode='HTML')
     return CHOOSING_FACTION
 
 async def choose_faction(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
