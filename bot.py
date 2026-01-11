@@ -1,6 +1,7 @@
 # bot.py
 import logging
 import os
+import html
 
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
@@ -51,7 +52,7 @@ async def profile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
     if character:
         message = (
-            f"<b>Имя:</b> {character['name']}\n"
+            f"<b>Имя:</b> {html.escape(character['name'])}\n"
             f"<b>Класс:</b> {character['class_name']}\n"
             f"<b>Фракция:</b> {character['faction_name']}\n"
             f"<b>Уровень:</b> {character['level']} (Опыт: {character['experience']})\n"
@@ -84,6 +85,7 @@ async def create_character_start(update: Update, context: ContextTypes.DEFAULT_T
 
 async def choose_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Получает имя персонажа и запрашивает класс."""
+    # We store the raw name. Sanitization happens at display time.
     context.user_data['name'] = update.message.text
 
     keyboard = [
@@ -139,6 +141,7 @@ async def choose_faction(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         # Сохраняем в БД
         create_character(user_id, player.name, player.character_class.name, player.faction['name'], stats_for_db)
 
+        # player.__str__ is now safe due to Character class fix
         await query.edit_message_text(text=f"Персонаж создан!\n\n{player}")
     except (ValueError, KeyError) as e:
         await query.edit_message_text(text=f"Произошла ошибка при создании персонажа: {e}")
