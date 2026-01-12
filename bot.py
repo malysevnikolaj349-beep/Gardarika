@@ -1,6 +1,7 @@
 # bot.py
 import logging
 import os
+import html
 
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
@@ -50,8 +51,10 @@ async def profile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     character = get_character_by_user_id(user_id)
 
     if character:
+        # Escape user input to prevent HTML injection
+        safe_name = html.escape(character['name'])
         message = (
-            f"<b>Имя:</b> {character['name']}\n"
+            f"<b>Имя:</b> {safe_name}\n"
             f"<b>Класс:</b> {character['class_name']}\n"
             f"<b>Фракция:</b> {character['faction_name']}\n"
             f"<b>Уровень:</b> {character['level']} (Опыт: {character['experience']})\n"
