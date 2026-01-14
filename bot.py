@@ -1,6 +1,7 @@
 # bot.py
 import logging
 import os
+import asyncio
 
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
@@ -36,7 +37,8 @@ CHOOSING_NAME, CHOOSING_CLASS, CHOOSING_FACTION = range(3)
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Обрабатывает команду /start, регистрирует пользователя."""
     user = update.effective_user
-    add_user_if_not_exists(user.id)
+    # Выполняем блокирующую операцию БД в отдельном потоке, чтобы не блокировать event loop
+    await asyncio.to_thread(add_user_if_not_exists, user.id)
     await update.message.reply_html(
         f"Привет, {user.mention_html()}!\n"
         "Добро пожаловать в мир Гардарики. "
@@ -47,7 +49,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 async def profile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Показывает профиль персонажа."""
     user_id = update.effective_user.id
-    character = get_character_by_user_id(user_id)
+    # Получаем данные персонажа асинхронно
+    character = await asyncio.to_thread(get_character_by_user_id, user_id)
 
     if character:
         message = (
@@ -75,7 +78,7 @@ async def profile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 async def create_character_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Начинает диалог создания персонажа."""
     user_id = update.effective_user.id
-    if get_character_by_user_id(user_id):
+    if await asyncio.to_thread(get_character_by_user_id, user_id):
         await update.message.reply_text("У вас уже есть персонаж. Вы можете посмотреть его профиль командой /profile.")
         return ConversationHandler.END
 
@@ -137,7 +140,7 @@ async def choose_faction(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         }
 
         # Сохраняем в БД
-        create_character(user_id, player.name, player.character_class.name, player.faction['name'], stats_for_db)
+        await asyncio.to_thread(create_character, user_id, player.name, player.character_class.name, player.faction['name'], stats_for_db)
 
         await query.edit_message_text(text=f"Персонаж создан!\n\n{player}")
     except (ValueError, KeyError) as e:
