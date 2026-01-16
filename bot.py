@@ -21,6 +21,7 @@ from gardarika.database.operations import (
 )
 from gardarika.character.character import Character
 from gardarika.character.attributes import Attribute
+import html
 
 # Включаем логирование
 logging.basicConfig(
@@ -51,17 +52,18 @@ async def profile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
     if character:
         message = (
-            f"<b>Имя:</b> {character['name']}\n"
-            f"<b>Класс:</b> {character['class_name']}\n"
-            f"<b>Фракция:</b> {character['faction_name']}\n"
-            f"<b>Уровень:</b> {character['level']} (Опыт: {character['experience']})\n"
-            f"<b>Здоровье:</b> {character['health']} | <b>Мана:</b> {character['mana']}\n\n"
-            f"<b>Атрибуты:</b>\n"
-            f"  Сила: {character['strength']}\n"
-            f"  Ловкость: {character['dexterity']}\n"
-            f"  Мудрость: {character['wisdom']}\n"
-            f"  Выносливость: {character['endurance']}\n"
-            f"  Харизма: {character['charisma']}"
+            f"📜 <b>Профиль героя</b>\n\n"
+            f"👤 <b>Имя:</b> {html.escape(character['name'])}\n"
+            f"🛡️ <b>Класс:</b> {character['class_name']}\n"
+            f"🚩 <b>Фракция:</b> {character['faction_name']}\n"
+            f"📊 <b>Уровень:</b> {character['level']} (Опыт: {character['experience']})\n"
+            f"❤️ <b>Здоровье:</b> {character['health']} | 💧 <b>Мана:</b> {character['mana']}\n\n"
+            f"✨ <b>Атрибуты:</b>\n"
+            f"  💎 Сила: {character['strength']}\n"
+            f"  🧶 Ловкость: {character['dexterity']}\n"
+            f"  🦉 Мудрость: {character['wisdom']}\n"
+            f"  🐎 Выносливость: {character['endurance']}\n"
+            f"  🎭 Харизма: {character['charisma']}"
         )
         await update.message.reply_html(message)
     else:
