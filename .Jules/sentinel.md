@@ -1,0 +1,4 @@
+## 2024-05-23 - [HTML Injection in Profile]
+**Vulnerability:** The Telegram bot interpolated user-provided character names directly into HTML-formatted messages (e.g., `f"<b>Name:</b> {name}"`). A user could set their name to contain HTML tags (e.g., `<b>`, `<i>`), allowing them to break message formatting or potentially inject malicious content/links if not sanitized.
+**Learning:** Telegram's `parse_mode='HTML'` treats all content as potential HTML. Any user input displayed in this mode must be treated as untrusted and explicitly escaped. Relying on the platform to handle "bad" HTML is unsafe and can lead to errors or display issues (DoS for that command).
+**Prevention:** Always use `html.escape()` on any dynamic, user-controlled string before interpolating it into an HTML message template.
