@@ -1,6 +1,7 @@
 # bot.py
 import logging
 import os
+import asyncio
 
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
@@ -33,10 +34,11 @@ CHOOSING_NAME, CHOOSING_CLASS, CHOOSING_FACTION = range(3)
 
 # --- Функции-обработчики команд ---
 
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Обрабатывает команду /start, регистрирует пользователя."""
     user = update.effective_user
-    add_user_if_not_exists(user.id)
+    await asyncio.to_thread(add_user_if_not_exists, user.id)
     await update.message.reply_html(
         f"Привет, {user.mention_html()}!\n"
         "Добро пожаловать в мир Гардарики. "
@@ -44,10 +46,11 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         "Чтобы посмотреть профиль, используйте /profile."
     )
 
+
 async def profile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Показывает профиль персонажа."""
     user_id = update.effective_user.id
-    character = get_character_by_user_id(user_id)
+    character = await asyncio.to_thread(get_character_by_user_id, user_id)
 
     if character:
         message = (
@@ -72,15 +75,17 @@ async def profile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 # --- Логика создания персонажа ---
 
+
 async def create_character_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Начинает диалог создания персонажа."""
     user_id = update.effective_user.id
-    if get_character_by_user_id(user_id):
+    if await asyncio.to_thread(get_character_by_user_id, user_id):
         await update.message.reply_text("У вас уже есть персонаж. Вы можете посмотреть его профиль командой /profile.")
         return ConversationHandler.END
 
     await update.message.reply_text("Создание нового персонажа. Как его будут звать?")
     return CHOOSING_NAME
+
 
 async def choose_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Получает имя персонажа и запрашивает класс."""
@@ -95,6 +100,7 @@ async def choose_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int
 
     await update.message.reply_text("Отличное имя! Теперь выбери класс:", reply_markup=reply_markup)
     return CHOOSING_CLASS
+
 
 async def choose_class(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Получает класс и запрашивает фракцию."""
@@ -111,6 +117,7 @@ async def choose_class(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
 
     await query.edit_message_text(text="Класс выбран. К какой фракции примкнешь?", reply_markup=reply_markup)
     return CHOOSING_FACTION
+
 
 async def choose_faction(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Получает фракцию, создает персонажа и завершает диалог."""
@@ -137,7 +144,7 @@ async def choose_faction(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         }
 
         # Сохраняем в БД
-        create_character(user_id, player.name, player.character_class.name, player.faction['name'], stats_for_db)
+        await asyncio.to_thread(create_character, user_id, player.name, player.character_class.name, player.faction['name'], stats_for_db)
 
         await query.edit_message_text(text=f"Персонаж создан!\n\n{player}")
     except (ValueError, KeyError) as e:
@@ -145,12 +152,14 @@ async def choose_faction(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
     return ConversationHandler.END
 
+
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Отменяет и завершает диалог."""
     await update.message.reply_text("Создание персонажа отменено.")
     return ConversationHandler.END
 
 # --- Главная функция ---
+
 
 def main() -> None:
     """Запускает бота."""
@@ -180,6 +189,7 @@ def main() -> None:
     print("Бот запущен...")
     application.run_polling()
     print("Бот остановлен.")
+
 
 if __name__ == "__main__":
     main()

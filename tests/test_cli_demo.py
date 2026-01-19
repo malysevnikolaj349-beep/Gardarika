@@ -4,10 +4,10 @@ import sys
 
 
 def test_demo_cli_runs():
-    env = dict(os.environ, PYTHONPATH="src")
+    # Execute in src directory so it picks up the src/gardarika package
     result = subprocess.run(
         [sys.executable, "-m", "gardarika.app", "demo"],
-        env=env,
+        cwd="src",
         capture_output=True,
         text=True,
         check=True,
@@ -18,10 +18,10 @@ def test_demo_cli_runs():
 
 
 def test_render_cli_outputs_map():
-    env = dict(os.environ, PYTHONPATH="src")
+    # Execute in src directory so it picks up the src/gardarika package
     result = subprocess.run(
         [sys.executable, "-m", "gardarika.app", "render"],
-        env=env,
+        cwd="src",
         capture_output=True,
         text=True,
         check=True,
