@@ -1,8 +1,8 @@
-# gardarika/character/character.py
-
 from .classes import get_class
 from .attributes import Attribute
 from ..lore.world import get_faction_info
+from ..ux import format_character_profile
+
 
 class Character:
     def __init__(self, name, character_class_name, faction_name):
@@ -11,7 +11,9 @@ class Character:
         # Устанавливаем класс и базовые атрибуты
         self.character_class = get_class(character_class_name)
         if not self.character_class:
-            raise ValueError(f"Неизвестный класс персонажа: {character_class_name}")
+            raise ValueError(
+                f"Неизвестный класс персонажа: {character_class_name}"
+            )
 
         self.attributes = self.character_class.base_stats.copy()
 
@@ -27,18 +29,13 @@ class Character:
         self.mana = 50 + self.attributes.get(Attribute.WISDOM, 0)
 
     def __str__(self):
-        return (
-            f"📜 <b>ПРОФИЛЬ ГЕРОЯ</b>\n\n"
-            f"👤 <b>Имя:</b> {self.name}\n"
-            f"🛡 <b>Класс:</b> {self.character_class.name}\n"
-            f"🚩 <b>Фракция:</b> {self.faction['name']}\n"
-            f"📊 <b>Уровень:</b> {self.level}\n"
-            f"❤️ <b>Здоровье:</b> {self.health}\n"
-            f"💧 <b>Мана:</b> {self.mana}\n\n"
-            f"<b>💎 Атрибуты:</b>\n"
-            f"  💪 Сила: {self.attributes.get(Attribute.STRENGTH, 0)}\n"
-            f"  🦶 Ловкость: {self.attributes.get(Attribute.DEXTERITY, 0)}\n"
-            f"  🦉 Мудрость: {self.attributes.get(Attribute.WISDOM, 0)}\n"
-            f"  🏇 Выносливость: {self.attributes.get(Attribute.ENDURANCE, 0)}\n"
-            f"  🎭 Харизма: {self.attributes.get(Attribute.CHARISMA, 0)}"
+        return format_character_profile(
+            name=self.name,
+            class_name=self.character_class.name,
+            faction_name=self.faction['name'],
+            level=self.level,
+            experience=self.experience,
+            health=self.health,
+            mana=self.mana,
+            attributes=self.attributes
         )
