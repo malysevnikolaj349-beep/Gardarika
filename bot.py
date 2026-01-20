@@ -21,6 +21,7 @@ from gardarika.database.operations import (
 )
 from gardarika.character.character import Character
 from gardarika.character.attributes import Attribute
+from gardarika.ux import format_character_profile
 
 # Включаем логирование
 logging.basicConfig(
@@ -50,20 +51,7 @@ async def profile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     character = get_character_by_user_id(user_id)
 
     if character:
-        message = (
-            f"<b>Имя:</b> {character['name']}\n"
-            f"<b>Класс:</b> {character['class_name']}\n"
-            f"<b>Фракция:</b> {character['faction_name']}\n"
-            f"<b>Уровень:</b> {character['level']} (Опыт: {character['experience']})\n"
-            f"<b>Здоровье:</b> {character['health']} | <b>Мана:</b> {character['mana']}\n\n"
-            f"<b>Атрибуты:</b>\n"
-            f"  Сила: {character['strength']}\n"
-            f"  Ловкость: {character['dexterity']}\n"
-            f"  Мудрость: {character['wisdom']}\n"
-            f"  Выносливость: {character['endurance']}\n"
-            f"  Харизма: {character['charisma']}"
-        )
-        await update.message.reply_html(message)
+        await update.message.reply_html(format_character_profile(character))
     else:
         await update.message.reply_text(
             "У вас еще нет персонажа. "
