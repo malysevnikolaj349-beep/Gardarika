@@ -1,3 +1,3 @@
-## 2024-05-23 - Visual Polish in Text Interfaces
-**Learning:** In text-based interfaces like Telegram bots, emojis serve as critical visual anchors. Replacing plain text lists with emoji-bulleted lists (e.g., 🛡 Class, 📊 Level) significantly improves scannability and "delight" without changing the underlying layout or requiring complex UI components.
-**Action:** When working on chat bots, always look for opportunities to replace standard bullet points or labels with context-appropriate emojis to improve cognitive processing speed for the user.
+## 2024-05-23 - Unified Profile Formatting
+**Learning:** In hybrid architectures where data is accessed both as objects (during creation) and raw DB rows (during read operations), consistent formatting requires a "duck-typed" utility. A single `format_character_profile` function that intelligently handles both `Character` instances and dictionary/`sqlite3.Row` objects eliminates UX inconsistencies where the user sees different layouts depending on the context (just created vs. queried).
+**Action:** When adding new UI elements that display data, always create a centralized formatting function in `ux.py` that accepts a flexible `data` argument, rather than duplicating formatting logic in both the `__str__` method and the bot command handler.
