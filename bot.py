@@ -1,8 +1,10 @@
 # bot.py
 import logging
 import os
+import html
 
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.constants import ParseMode
 from telegram.ext import (
     Application,
     CommandHandler,
@@ -51,9 +53,9 @@ async def profile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
     if character:
         message = (
-            f"<b>Имя:</b> {character['name']}\n"
-            f"<b>Класс:</b> {character['class_name']}\n"
-            f"<b>Фракция:</b> {character['faction_name']}\n"
+            f"<b>Имя:</b> {html.escape(character['name'])}\n"
+            f"<b>Класс:</b> {html.escape(character['class_name'])}\n"
+            f"<b>Фракция:</b> {html.escape(character['faction_name'])}\n"
             f"<b>Уровень:</b> {character['level']} (Опыт: {character['experience']})\n"
             f"<b>Здоровье:</b> {character['health']} | <b>Мана:</b> {character['mana']}\n\n"
             f"<b>Атрибуты:</b>\n"
@@ -139,7 +141,7 @@ async def choose_faction(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         # Сохраняем в БД
         create_character(user_id, player.name, player.character_class.name, player.faction['name'], stats_for_db)
 
-        await query.edit_message_text(text=f"Персонаж создан!\n\n{player}")
+        await query.edit_message_text(text=f"Персонаж создан!\n\n{player}", parse_mode=ParseMode.HTML)
     except (ValueError, KeyError) as e:
         await query.edit_message_text(text=f"Произошла ошибка при создании персонажа: {e}")
 
