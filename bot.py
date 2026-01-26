@@ -1,6 +1,7 @@
 # bot.py
 import logging
 import os
+import html
 
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
@@ -50,18 +51,21 @@ async def profile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     character = get_character_by_user_id(user_id)
 
     if character:
+        safe_name = html.escape(character['name'])
         message = (
-            f"<b>Имя:</b> {character['name']}\n"
-            f"<b>Класс:</b> {character['class_name']}\n"
-            f"<b>Фракция:</b> {character['faction_name']}\n"
-            f"<b>Уровень:</b> {character['level']} (Опыт: {character['experience']})\n"
-            f"<b>Здоровье:</b> {character['health']} | <b>Мана:</b> {character['mana']}\n\n"
-            f"<b>Атрибуты:</b>\n"
-            f"  Сила: {character['strength']}\n"
-            f"  Ловкость: {character['dexterity']}\n"
-            f"  Мудрость: {character['wisdom']}\n"
-            f"  Выносливость: {character['endurance']}\n"
-            f"  Харизма: {character['charisma']}"
+            f"📜 <b>ПРОФИЛЬ ГЕРОЯ</b>\n\n"
+            f"👤 <b>Имя:</b> {safe_name}\n"
+            f"🛡️ <b>Класс:</b> {character['class_name']}\n"
+            f"🚩 <b>Фракция:</b> {character['faction_name']}\n"
+            f"📊 <b>Уровень:</b> {character['level']} (Опыт: {character['experience']})\n"
+            f"❤️ <b>Здоровье:</b> {character['health']}\n"
+            f"💧 <b>Мана:</b> {character['mana']}\n\n"
+            f"<b>💎 Атрибуты:</b>\n"
+            f"  💪 Сила: {character['strength']}\n"
+            f"  🧶 Ловкость: {character['dexterity']}\n"
+            f"  🦉 Мудрость: {character['wisdom']}\n"
+            f"  🐴 Выносливость: {character['endurance']}\n"
+            f"  🎭 Харизма: {character['charisma']}"
         )
         await update.message.reply_html(message)
     else:
