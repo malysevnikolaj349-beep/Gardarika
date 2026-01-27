@@ -1,5 +1,6 @@
 # gardarika/character/character.py
 
+import html
 from .classes import get_class
 from .attributes import Attribute
 from ..lore.world import get_faction_info
@@ -27,9 +28,10 @@ class Character:
         self.mana = 50 + self.attributes.get(Attribute.WISDOM, 0)
 
     def __str__(self):
+        escaped_name = html.escape(self.name)
         return (
             f"📜 <b>ПРОФИЛЬ ГЕРОЯ</b>\n\n"
-            f"👤 <b>Имя:</b> {self.name}\n"
+            f"👤 <b>Имя:</b> {escaped_name}\n"
             f"🛡 <b>Класс:</b> {self.character_class.name}\n"
             f"🚩 <b>Фракция:</b> {self.faction['name']}\n"
             f"📊 <b>Уровень:</b> {self.level}\n"
