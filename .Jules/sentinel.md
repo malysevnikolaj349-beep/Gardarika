@@ -1,0 +1,4 @@
+## 2026-01-28 - HTML Injection in Telegram Messages
+**Vulnerability:** User-provided character names were directly interpolated into HTML-formatted Telegram messages without escaping. This allowed users to inject HTML tags (e.g., `<b>`, `<a>`) into their profiles and creation messages, potentially disrupting formatting or enabling phishing (HTML Injection).
+**Learning:** Telegram bots using `parse_mode='HTML'` treat string content as code/markup. Standard string interpolation (`f"{var}"`) does not automatically sanitize input, even if the platform has some built-in safety. Python's `html.escape()` is essential when dealing with user input in this context.
+**Prevention:** Always wrap user-controlled variables in `html.escape()` before inserting them into HTML-formatted strings or templates intended for Telegram messages.
