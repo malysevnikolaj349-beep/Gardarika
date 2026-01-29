@@ -3,6 +3,7 @@ import logging
 import os
 
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.constants import ParseMode
 from telegram.ext import (
     Application,
     CommandHandler,
@@ -21,6 +22,8 @@ from gardarika.database.operations import (
 )
 from gardarika.character.character import Character
 from gardarika.character.attributes import Attribute
+from gardarika.character.classes import AVAILABLE_CLASSES
+from gardarika.lore.world import FACTIONS
 
 # Включаем логирование
 logging.basicConfig(
@@ -30,6 +33,20 @@ logger = logging.getLogger(__name__)
 
 # Определяем состояния для диалога
 CHOOSING_NAME, CHOOSING_CLASS, CHOOSING_FACTION = range(3)
+
+# Эмодзи для классов и фракций
+CLASS_EMOJIS = {
+    "воин": "⚔️",
+    "волхв": "🔮",
+    "охотник": "🏹"
+}
+
+FACTION_EMOJIS = {
+    "kiev": "🏰",
+    "novgorod": "🏛",
+    "forest_tribes": "🌲"
+}
+
 
 # --- Функции-обработчики команд ---
 
@@ -86,15 +103,35 @@ async def choose_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int
     """Получает имя персонажа и запрашивает класс."""
     context.user_data['name'] = update.message.text
 
+    # Формируем описание классов
+    class_descriptions = ""
+    for class_key, char_class in AVAILABLE_CLASSES.items():
+        emoji = CLASS_EMOJIS.get(class_key, "❓")
+        class_descriptions += (
+            f"\n{emoji} <b>{char_class.name}</b>: {char_class.description}\n"
+        )
+
     keyboard = [
-        [InlineKeyboardButton("⚔️ Воин", callback_data="воин")],
-        [InlineKeyboardButton("🔮 Волхв", callback_data="волхв")],
-        [InlineKeyboardButton("🏹 Охотник", callback_data="охотник")],
+        [InlineKeyboardButton(
+            f"{CLASS_EMOJIS.get('воин')} Воин", callback_data="воин"
+        )],
+        [InlineKeyboardButton(
+            f"{CLASS_EMOJIS.get('волхв')} Волхв", callback_data="волхв"
+        )],
+        [InlineKeyboardButton(
+            f"{CLASS_EMOJIS.get('охотник')} Охотник", callback_data="охотник"
+        )],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    await update.message.reply_text("Отличное имя! Теперь выбери класс:", reply_markup=reply_markup)
+    message = (
+        "Отличное имя! Теперь выбери класс:\n"
+        f"{class_descriptions}"
+    )
+
+    await update.message.reply_html(message, reply_markup=reply_markup)
     return CHOOSING_CLASS
+
 
 async def choose_class(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Получает класс и запрашивает фракцию."""
@@ -102,14 +139,39 @@ async def choose_class(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
     await query.answer()
     context.user_data['class'] = query.data
 
+    # Формируем описание фракций
+    faction_descriptions = ""
+    for faction_key, faction_data in FACTIONS.items():
+        emoji = FACTION_EMOJIS.get(faction_key, "❓")
+        faction_descriptions += (
+            f"\n{emoji} <b>{faction_data['name']}</b>: "
+            f"{faction_data['description']}\n"
+        )
+
     keyboard = [
-        [InlineKeyboardButton("🏰 Киевское Княжество", callback_data="kiev")],
-        [InlineKeyboardButton("🏛 Новгородская Республика", callback_data="novgorod")],
-        [InlineKeyboardButton("🌲 Лесные Племена", callback_data="forest_tribes")],
+        [InlineKeyboardButton(
+            f"{FACTION_EMOJIS.get('kiev')} Киевское Княжество",
+            callback_data="kiev"
+        )],
+        [InlineKeyboardButton(
+            f"{FACTION_EMOJIS.get('novgorod')} Новгородская Республика",
+            callback_data="novgorod"
+        )],
+        [InlineKeyboardButton(
+            f"{FACTION_EMOJIS.get('forest_tribes')} Лесные Племена",
+            callback_data="forest_tribes"
+        )],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    await query.edit_message_text(text="Класс выбран. К какой фракции примкнешь?", reply_markup=reply_markup)
+    message = (
+        "Класс выбран. К какой фракции примкнешь?\n"
+        f"{faction_descriptions}"
+    )
+
+    await query.edit_message_text(
+        text=message, reply_markup=reply_markup, parse_mode=ParseMode.HTML
+    )
     return CHOOSING_FACTION
 
 async def choose_faction(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
