@@ -1,0 +1,4 @@
+## 2024-05-22 - HTML Injection in Telegram Messages
+**Vulnerability:** User-controlled input (character name) was being interpolated directly into f-strings used for `reply_html` messages without sanitization. This allowed users to inject HTML tags (e.g., `<b>`, `<i>`, or even potentially malformed tags) into messages sent by the bot.
+**Learning:** Even in environments like Telegram where "XSS" in the browser sense isn't possible, HTML injection can still disrupt layout, spoof system messages, or confuse users. Telegram's `parse_mode='HTML'` respects tags found in the string. Trusting database content to be display-safe is a common pitfall.
+**Prevention:** Always use `html.escape()` when inserting user data into HTML-formatted strings, even for simple text fields. This applies to both direct message construction and string representation methods (like `__str__`) if they are intended for HTML output.

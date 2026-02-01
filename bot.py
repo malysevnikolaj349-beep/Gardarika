@@ -1,6 +1,7 @@
 # bot.py
 import logging
 import os
+import html
 
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
@@ -31,6 +32,7 @@ logger = logging.getLogger(__name__)
 # Определяем состояния для диалога
 CHOOSING_NAME, CHOOSING_CLASS, CHOOSING_FACTION = range(3)
 
+
 # --- Функции-обработчики команд ---
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -44,6 +46,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         "Чтобы посмотреть профиль, используйте /profile."
     )
 
+
 async def profile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Показывает профиль персонажа."""
     user_id = update.effective_user.id
@@ -51,9 +54,9 @@ async def profile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
     if character:
         message = (
-            f"<b>Имя:</b> {character['name']}\n"
-            f"<b>Класс:</b> {character['class_name']}\n"
-            f"<b>Фракция:</b> {character['faction_name']}\n"
+            f"<b>Имя:</b> {html.escape(character['name'])}\n"
+            f"<b>Класс:</b> {html.escape(character['class_name'])}\n"
+            f"<b>Фракция:</b> {html.escape(character['faction_name'])}\n"
             f"<b>Уровень:</b> {character['level']} (Опыт: {character['experience']})\n"
             f"<b>Здоровье:</b> {character['health']} | <b>Мана:</b> {character['mana']}\n\n"
             f"<b>Атрибуты:</b>\n"
@@ -72,15 +75,21 @@ async def profile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 # --- Логика создания персонажа ---
 
-async def create_character_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+
+async def create_character_start(
+    update: Update, context: ContextTypes.DEFAULT_TYPE
+) -> int:
     """Начинает диалог создания персонажа."""
     user_id = update.effective_user.id
     if get_character_by_user_id(user_id):
         await update.message.reply_text("У вас уже есть персонаж. Вы можете посмотреть его профиль командой /profile.")
         return ConversationHandler.END
 
-    await update.message.reply_text("Создание нового персонажа. Как его будут звать?")
+    await update.message.reply_text(
+        "Создание нового персонажа. Как его будут звать?"
+    )
     return CHOOSING_NAME
+
 
 async def choose_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Получает имя персонажа и запрашивает класс."""
@@ -93,8 +102,11 @@ async def choose_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    await update.message.reply_text("Отличное имя! Теперь выбери класс:", reply_markup=reply_markup)
+    await update.message.reply_text(
+        "Отличное имя! Теперь выбери класс:", reply_markup=reply_markup
+    )
     return CHOOSING_CLASS
+
 
 async def choose_class(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Получает класс и запрашивает фракцию."""
@@ -109,10 +121,16 @@ async def choose_class(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    await query.edit_message_text(text="Класс выбран. К какой фракции примкнешь?", reply_markup=reply_markup)
+    await query.edit_message_text(
+        text="Класс выбран. К какой фракции примкнешь?",
+        reply_markup=reply_markup
+    )
     return CHOOSING_FACTION
 
-async def choose_faction(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+
+async def choose_faction(
+    update: Update, context: ContextTypes.DEFAULT_TYPE
+) -> int:
     """Получает фракцию, создает персонажа и завершает диалог."""
     query = update.callback_query
     await query.answer()
@@ -137,13 +155,22 @@ async def choose_faction(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         }
 
         # Сохраняем в БД
-        create_character(user_id, player.name, player.character_class.name, player.faction['name'], stats_for_db)
+        create_character(
+            user_id,
+            player.name,
+            player.character_class.name,
+            player.faction['name'],
+            stats_for_db
+        )
 
         await query.edit_message_text(text=f"Персонаж создан!\n\n{player}")
     except (ValueError, KeyError) as e:
-        await query.edit_message_text(text=f"Произошла ошибка при создании персонажа: {e}")
+        await query.edit_message_text(
+            text=f"Произошла ошибка при создании персонажа: {e}"
+        )
 
     return ConversationHandler.END
+
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Отменяет и завершает диалог."""
@@ -180,6 +207,7 @@ def main() -> None:
     print("Бот запущен...")
     application.run_polling()
     print("Бот остановлен.")
+
 
 if __name__ == "__main__":
     main()
