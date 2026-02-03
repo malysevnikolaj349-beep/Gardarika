@@ -1,6 +1,7 @@
 # bot.py
 import logging
 import os
+import html
 
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
@@ -33,6 +34,7 @@ CHOOSING_NAME, CHOOSING_CLASS, CHOOSING_FACTION = range(3)
 
 # --- Функции-обработчики команд ---
 
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Обрабатывает команду /start, регистрирует пользователя."""
     user = update.effective_user
@@ -44,6 +46,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         "Чтобы посмотреть профиль, используйте /profile."
     )
 
+
 async def profile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Показывает профиль персонажа."""
     user_id = update.effective_user.id
@@ -51,17 +54,20 @@ async def profile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
     if character:
         message = (
-            f"<b>Имя:</b> {character['name']}\n"
-            f"<b>Класс:</b> {character['class_name']}\n"
-            f"<b>Фракция:</b> {character['faction_name']}\n"
-            f"<b>Уровень:</b> {character['level']} (Опыт: {character['experience']})\n"
-            f"<b>Здоровье:</b> {character['health']} | <b>Мана:</b> {character['mana']}\n\n"
-            f"<b>Атрибуты:</b>\n"
-            f"  Сила: {character['strength']}\n"
-            f"  Ловкость: {character['dexterity']}\n"
-            f"  Мудрость: {character['wisdom']}\n"
-            f"  Выносливость: {character['endurance']}\n"
-            f"  Харизма: {character['charisma']}"
+            f"📜 <b>ПРОФИЛЬ ГЕРОЯ</b>\n\n"
+            f"👤 <b>Имя:</b> {html.escape(character['name'])}\n"
+            f"🛡️ <b>Класс:</b> {character['class_name']}\n"
+            f"🚩 <b>Фракция:</b> {character['faction_name']}\n"
+            f"📊 <b>Уровень:</b> {character['level']} "
+            f"(💎 {character['experience']})\n"
+            f"❤️ <b>Здоровье:</b> {character['health']}\n"
+            f"💧 <b>Мана:</b> {character['mana']}\n\n"
+            f"<b>💎 Атрибуты:</b>\n"
+            f"  💪 Сила: {character['strength']}\n"
+            f"  🧶 Ловкость: {character['dexterity']}\n"
+            f"  🦉 Мудрость: {character['wisdom']}\n"
+            f"  🐴 Выносливость: {character['endurance']}\n"
+            f"  🎭 Харизма: {character['charisma']}"
         )
         await update.message.reply_html(message)
     else:
@@ -72,7 +78,10 @@ async def profile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 # --- Логика создания персонажа ---
 
-async def create_character_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+
+async def create_character_start(
+    update: Update, context: ContextTypes.DEFAULT_TYPE
+) -> int:
     """Начинает диалог создания персонажа."""
     user_id = update.effective_user.id
     if get_character_by_user_id(user_id):
@@ -82,7 +91,10 @@ async def create_character_start(update: Update, context: ContextTypes.DEFAULT_T
     await update.message.reply_text("Создание нового персонажа. Как его будут звать?")
     return CHOOSING_NAME
 
-async def choose_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+
+async def choose_name(
+    update: Update, context: ContextTypes.DEFAULT_TYPE
+) -> int:
     """Получает имя персонажа и запрашивает класс."""
     context.user_data['name'] = update.message.text
 
@@ -96,7 +108,10 @@ async def choose_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int
     await update.message.reply_text("Отличное имя! Теперь выбери класс:", reply_markup=reply_markup)
     return CHOOSING_CLASS
 
-async def choose_class(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+
+async def choose_class(
+    update: Update, context: ContextTypes.DEFAULT_TYPE
+) -> int:
     """Получает класс и запрашивает фракцию."""
     query = update.callback_query
     await query.answer()
@@ -112,7 +127,10 @@ async def choose_class(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
     await query.edit_message_text(text="Класс выбран. К какой фракции примкнешь?", reply_markup=reply_markup)
     return CHOOSING_FACTION
 
-async def choose_faction(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+
+async def choose_faction(
+    update: Update, context: ContextTypes.DEFAULT_TYPE
+) -> int:
     """Получает фракцию, создает персонажа и завершает диалог."""
     query = update.callback_query
     await query.answer()
@@ -145,12 +163,14 @@ async def choose_faction(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
     return ConversationHandler.END
 
+
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Отменяет и завершает диалог."""
     await update.message.reply_text("Создание персонажа отменено.")
     return ConversationHandler.END
 
 # --- Главная функция ---
+
 
 def main() -> None:
     """Запускает бота."""
@@ -180,6 +200,7 @@ def main() -> None:
     print("Бот запущен...")
     application.run_polling()
     print("Бот остановлен.")
+
 
 if __name__ == "__main__":
     main()
