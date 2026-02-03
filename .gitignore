@@ -20,3 +20,8 @@ env/
 
 # Node (just in case)
 node_modules/
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
